@@ -4,7 +4,7 @@ import os
 DATA_DIR = "data"
 DATA_TRAIN_PATH = f'{DATA_DIR}/train'
 IMG_SIZE = 48
-BATCH_SIZE = 32
+BATCH_SIZE = 64
 
 
 def get_meta():

@@ -1,5 +1,7 @@
 import os
 import json
+import io
+import sys
 from datetime import datetime
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -15,6 +17,26 @@ def create_log_dir(base_dir='logs'):
 
 def get_tensorboard_callback(log_dir):
     return TensorBoard(log_dir=log_dir, histogram_freq=1)
+
+
+def dump_training_config(
+    batch_size,
+    epochs,
+    steps_per_epoch,
+    log_dir,
+):
+    os.makedirs(log_dir, exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    log_path = os.path.join(log_dir, f'training_config_{timestamp}.json')
+
+    config = {
+        'batch_size': batch_size,
+        'epochs': epochs,
+        'steps_per_epoch': steps_per_epoch,
+    }
+
+    with open(log_path, 'w') as f:
+        json.dump(config, f, indent=4)
 
 
 def save_plot(history, log_dir, filename='training_plot.png'):
@@ -46,3 +68,15 @@ def save_metrics(history, log_dir):
 
 def save_model(model, log_dir, filename='model.keras'):
     model.save(os.path.join(log_dir, filename))
+
+
+def dump_model_nn(model, log_dir):
+    stringio = io.StringIO()
+    sys.stdout = stringio
+    model.summary()
+    sys.stdout = sys.__stdout__
+    log_path = os.path.join(log_dir, "model_nn.txt")
+    with open(log_path, 'w') as f:
+        f.write(stringio.getvalue())
+
+    print(f"Model summary saved to {log_path}")
