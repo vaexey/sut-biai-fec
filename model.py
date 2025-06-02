@@ -200,7 +200,7 @@ from tensorflow.keras.layers import Rescaling, RandomFlip, RandomRotation, Conv2
 
 #kaggle
 def build_model(num_classes):
-        num_features = 32
+        num_features = 48
 
         model = models.Sequential()
 
