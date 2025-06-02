@@ -3,8 +3,8 @@ import os
 
 DATA_DIR = "data"
 DATA_TRAIN_PATH = f'{DATA_DIR}/train'
+DATA_VAL_PATH = f'{DATA_DIR}/test'
 IMG_SIZE = 48
-BATCH_SIZE = 64
 
 
 def get_meta():
@@ -12,7 +12,7 @@ def get_meta():
     return class_names
 
 
-def load_data(train_dir, target_size=(IMG_SIZE, IMG_SIZE), batch_size=BATCH_SIZE):
+def load_data(train_dir, target_size=(IMG_SIZE, IMG_SIZE), batch_size=32, shuffle=True):
     train_datagen = ImageDataGenerator(
         rescale=1./255,  # normalize
         rotation_range=20,
@@ -30,7 +30,7 @@ def load_data(train_dir, target_size=(IMG_SIZE, IMG_SIZE), batch_size=BATCH_SIZE
         color_mode='grayscale',
         batch_size=batch_size,
         class_mode='categorical',
-        shuffle=True
+        shuffle=shuffle
     )
 
     return train_generator
