@@ -1,9 +1,11 @@
-from model import build_model
+from model import build_model, build_model2
 from model import lr_scheduler
 from model import early_stop
 from tensorflow.keras.optimizers import Adam
 from sklearn.utils.class_weight import compute_class_weight
 from tensorflow.keras.losses import CategoricalCrossentropy
+from keras.optimizers import Adamax
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
@@ -27,6 +29,7 @@ train_generator = ut.load_data(ut.DATA_TRAIN_PATH, batch_size=BATCH_SIZE)
 num_classes = len(train_generator.class_indices)
 
 model = build_model(num_classes)
+#model = build_model2(num_classes)
 
 
 model.compile(
@@ -35,19 +38,21 @@ model.compile(
         # loss='categorical_crossentropy',
         metrics=['accuracy'])
 
+# model.compile(loss='categorical_crossentropy', optimizer=Adamax(), metrics=['accuracy'])
+
 # params
 EPOCHS = 75
 STEPS_PER_EPOCH = train_generator.samples // train_generator.batch_size
 
 
 # weights
-class_weights = compute_class_weight(
-    class_weight='balanced',
-    classes=np.unique(train_generator.classes),
-    y=train_generator.classes
-)
-
-class_weights_dict = dict(enumerate(class_weights))
+# class_weights = compute_class_weight(
+#     class_weight='balanced',
+#     classes=np.unique(train_generator.classes),
+#     y=train_generator.classes
+# )
+#
+# class_weights_dict = dict(enumerate(class_weights))
 
 # train
 history = model.fit(
@@ -55,7 +60,7 @@ history = model.fit(
     steps_per_epoch=STEPS_PER_EPOCH,
     epochs=EPOCHS,
     callbacks=[log.get_tensorboard_callback(log_dir), early_stop, lr_scheduler],
-    class_weight=class_weights_dict,
+    # class_weight=class_weights_dict,
     verbose=1,
 )
 
@@ -64,7 +69,7 @@ print("Training completed")
 # eval
 
 print("Evaluation start")
-eval.run(model, log_dir)
+acc = eval.run(model, log_dir)
 
 # log
 
@@ -76,7 +81,8 @@ log.dump_training_config(
     epochs=EPOCHS,
     steps_per_epoch=STEPS_PER_EPOCH,
     log_dir=log_dir,
-    learning_rate=LEARNING_RATE
+    learning_rate=LEARNING_RATE,
+    acc=acc
 )
 log.dump_model_nn(model, log_dir)
 

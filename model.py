@@ -200,7 +200,7 @@ from tensorflow.keras.layers import Rescaling, RandomFlip, RandomRotation, Conv2
 
 #kaggle
 def build_model(num_classes):
-        num_features = 48
+        num_features = 32
 
         model = models.Sequential()
 
@@ -254,17 +254,85 @@ def build_model(num_classes):
 
         return model
 
+def build_model2(num_classes):
+    model = models.Sequential()
+
+    # Input shape: 48x48 grayscale images
+    input_shape = (48, 48, 1)
+
+    # Convolutional Block 1
+    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=input_shape))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Conv2D(32, (3, 3), activation='relu'))
+    model.add(layers.BatchNormalization())
+    model.add(layers.MaxPooling2D(pool_size=(2, 2)))
+    model.add(layers.Dropout(0.25))
+
+    # Convolutional Block 2
+    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(layers.BatchNormalization())
+    model.add(layers.MaxPooling2D(pool_size=(2, 2)))
+    model.add(layers.Dropout(0.25))
+
+    # Convolutional Block 3
+    model.add(layers.Conv2D(128, (3, 3), activation='relu'))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Conv2D(128, (3, 3), activation='relu'))
+    model.add(layers.BatchNormalization())
+    model.add(layers.MaxPooling2D(pool_size=(2, 2)))
+    model.add(layers.Dropout(0.25))
+
+    # Fully Connected Layers
+    model.add(layers.Flatten())
+    model.add(layers.Dense(512, activation='relu'))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Dropout(0.5))
+    model.add(layers.Dense(num_classes, activation='softmax'))
+    return model
+
+
+def build_custom_model(num_classes):
+    input_shape = (48, 48, 1)
+    model = models.Sequential()
+
+    model.add(layers.Conv2D(64, (3, 3), activation='relu', input_shape=input_shape))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(layers.BatchNormalization())
+    model.add(layers.MaxPooling2D())
+    model.add(layers.SpatialDropout2D(0.3))
+
+    model.add(layers.Conv2D(128, (3, 3), activation='relu'))
+    model.add(layers.BatchNormalization())
+    model.add(layers.Conv2D(128, (3, 3), activation='relu'))
+    model.add(layers.BatchNormalization())
+    model.add(layers.MaxPooling2D())
+    model.add(layers.SpatialDropout2D(0.3))
+
+    model.add(layers.Conv2D(256, (3, 3), activation='relu'))
+    model.add(layers.BatchNormalization())
+    model.add(layers.GlobalAveragePooling2D())
+
+    model.add(layers.Dense(128, activation='relu'))
+    model.add(layers.Dropout(0.5))
+    model.add(layers.Dense(num_classes, activation='softmax'))
+
+    return model
+
+
 lr_scheduler = ReduceLROnPlateau(
     monitor='loss',
     factor=0.5,
-    patience=5,
-    min_lr=1e-6,
+    patience=7,
+    min_lr=1e-7,
     verbose=1
 )
 
 early_stop = EarlyStopping(
     monitor='loss',
-    patience=10,
+    patience=15,
     restore_best_weights=True,
     verbose=1
 )

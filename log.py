@@ -24,7 +24,8 @@ def dump_training_config(
     epochs,
     steps_per_epoch,
     log_dir,
-    learning_rate
+    learning_rate,
+    acc
 ):
     os.makedirs(log_dir, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -35,6 +36,7 @@ def dump_training_config(
         'learning_rate': learning_rate,
         'epochs': epochs,
         'steps_per_epoch': steps_per_epoch,
+        'acc': acc
     }
 
     with open(log_path, 'w') as f:

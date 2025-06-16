@@ -1,5 +1,6 @@
 data
 data_no_disgust
+data_no_dfa
 __pycache__
 .venv
 logs
