@@ -24,10 +24,28 @@ def load_data(train_dir, target_size=(IMG_SIZE, IMG_SIZE), batch_size=32, shuffl
     #     fill_mode='nearest'
     # )
 
-    train_datagen = ImageDataGenerator()
+    train_datagen = ImageDataGenerator(
+         width_shift_range=0.2,
+         height_shift_range=0.2,
+         horizontal_flip=True
+    )
 
     train_generator = train_datagen.flow_from_directory(
         train_dir,
+        target_size=target_size,
+        color_mode='grayscale',
+        batch_size=batch_size,
+        class_mode='categorical',
+        shuffle=shuffle
+    )
+
+    return train_generator
+
+def load_val_data(test_dir, target_size=(IMG_SIZE, IMG_SIZE), batch_size=32, shuffle=False):
+    train_datagen = ImageDataGenerator()
+
+    train_generator = train_datagen.flow_from_directory(
+        test_dir,
         target_size=target_size,
         color_mode='grayscale',
         batch_size=batch_size,

@@ -1,4 +1,4 @@
-from model import build_model, build_model2
+from model import build_model#, build_model_transfer, build_model3
 from model import lr_scheduler
 from model import early_stop
 from tensorflow.keras.optimizers import Adam
@@ -22,14 +22,15 @@ log_dir = log.create_log_dir()
 
 BATCH_SIZE = 32
 # 1e-3
-LEARNING_RATE = 1e-3
+LEARNING_RATE = 1e-2
 
 train_generator = ut.load_data(ut.DATA_TRAIN_PATH, batch_size=BATCH_SIZE)
 
 num_classes = len(train_generator.class_indices)
 
 model = build_model(num_classes)
-#model = build_model2(num_classes)
+#model = build_model3(num_classes)
+# model = build_model_transfer(num_classes)
 
 
 model.compile(
@@ -54,14 +55,16 @@ STEPS_PER_EPOCH = train_generator.samples // train_generator.batch_size
 #
 # class_weights_dict = dict(enumerate(class_weights))
 
+val_generator = ut.load_val_data(ut.DATA_VAL_PATH, shuffle=False)
 # train
 history = model.fit(
     train_generator,
-    steps_per_epoch=STEPS_PER_EPOCH,
+    # steps_per_epoch=STEPS_PER_EPOCH,
     epochs=EPOCHS,
     callbacks=[log.get_tensorboard_callback(log_dir), early_stop, lr_scheduler],
     # class_weight=class_weights_dict,
     verbose=1,
+    validation_data=val_generator
 )
 
 print("Training completed")
@@ -93,6 +96,7 @@ log.dump_model_nn(model, log_dir)
 plt.figure()
 plt.plot(history.history['accuracy'], label='accuracy')
 plt.plot(history.history['loss'], label='loss')
+plt.plot(history.history['val_accuracy'], label='validation accuracy')
 plt.title('Train Metrics')
 plt.xlabel('Epoch')
 plt.ylabel('Value')
