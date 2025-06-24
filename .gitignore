@@ -1,5 +1,6 @@
 /data/*
 !/data/README.md
+!/data/dataset-cover.png
 /impl/__pycache__
 /impl/.venv
 /impl/logs
