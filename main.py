@@ -7,6 +7,7 @@ from tensorflow.keras.losses import CategoricalCrossentropy
 import matplotlib.pyplot as plt
 import matplotlib
 import utils as ut
+
 import log
 import eval
 

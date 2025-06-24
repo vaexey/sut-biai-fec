@@ -3,6 +3,7 @@ import os
 
 DATA_DIR = "data_no_disgust"
 DATA_TRAIN_PATH = f'{DATA_DIR}/train'
+
 DATA_VAL_PATH = f'{DATA_DIR}/test'
 IMG_SIZE = 48
 
