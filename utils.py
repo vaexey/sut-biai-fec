@@ -13,16 +13,6 @@ def get_meta():
 
 
 def load_data(train_dir, target_size=(IMG_SIZE, IMG_SIZE), batch_size=32, shuffle=True):
-    # train_datagen = ImageDataGenerator(
-    #     rescale=1./255,  # normalize
-    #     rotation_range=20,
-    #     width_shift_range=0.2,
-    #     height_shift_range=0.2,
-    #     shear_range=0.2,
-    #     zoom_range=0.2,
-    #     horizontal_flip=True,
-    #     fill_mode='nearest'
-    # )
 
     train_datagen = ImageDataGenerator(
          width_shift_range=0.2,
